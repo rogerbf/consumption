@@ -1,0 +1,7 @@
+node_modules
+distribution
+.DS_Store
+package
+consumption*.tgz
+npm-debug.log
+coverage
