@@ -41,5 +41,7 @@
     "distribution",
     "README.md"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "nightmare": "^2.9.1"
+  }
 }
