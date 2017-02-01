@@ -1,7 +1,7 @@
 {
   "name": "consumption",
   "version": "0.0.1",
-  "description": "",
+  "description": "extracts consumption data",
   "main": "./distribution/index.js",
   "scripts": {
     "test": "jest --config .jest",
@@ -18,7 +18,11 @@
     "coverage": "jest --config .jest --coverage",
     "watch:coverage": "jest --config .jest --coverage --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "consumption",
+    "phone",
+    "tele2"
+  ],
   "author": "rogerbf <roger@bergfalk.nu> (http://bergfalk.nu/)",
   "license": "MIT",
   "devDependencies": {
