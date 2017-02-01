@@ -1,5 +1,13 @@
-export default ({ nightmare, credentials }) =>
-  Promise.resolve({
+export default ({ nightmare, credentials, ...configuration }) =>
+  (
+    credentials &&
+    credentials.username !== undefined &&
+    credentials.password !== undefined
+    ? Promise.resolve(credentials)
+    : Promise.reject(`missing credentials`)
+  )
+  .then(credentials => ({
+    ...configuration,
     nightmare: (
       nightmare
       .goto(`https://www.tele2.se/LogOn/LogOn`)
@@ -8,4 +16,4 @@ export default ({ nightmare, credentials }) =>
       .click(`[value="Logga in"]`)
       .wait(`.t2-nav-nestedlist`)
     )
-  })
+  }))
