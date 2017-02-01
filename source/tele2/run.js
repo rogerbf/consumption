@@ -1,2 +1,2 @@
-export default ({ nightmare }) =>
-  nightmare.end().then(() => nightmare.extracted)
+export default ({ nightmare, extracted }) =>
+  nightmare.end().then(() => extracted)
