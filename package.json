@@ -13,7 +13,7 @@
     "eslint": "eslint source",
     "eslint:fix": "eslint --fix source",
     "repl": "npm run build && babel-node",
-    "nsp": "nsp test",
+    "nsp": "nsp check",
     "watch:test": "jest --config .jest --watch",
     "coverage": "jest --config .jest --coverage",
     "watch:coverage": "jest --config .jest --coverage --watch"
