@@ -3,13 +3,9 @@ import setup from './setup'
 import login from './login'
 import getConsumption from './get-consumption'
 import run from './run'
+import tele2 from './tele2'
 
-export default credentials =>
-  setup({
-    Nightmare,
-    debug: process.env.debug === `consumption`,
-    credentials
-  })
-  .then(login)
-  .then(getConsumption)
-  .then(run)
+export default tele2.bind(
+  null,
+  { Nightmare, setup, login, getConsumption, run }
+)
