@@ -1,6 +1,6 @@
 {
   "name": "consumption",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "extracts consumption data",
   "main": "./distribution/index.js",
   "scripts": {
