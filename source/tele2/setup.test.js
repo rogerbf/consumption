@@ -9,7 +9,9 @@ test(`setup with debug`, () => {
   .then(nightmare => {
     expect(Nightmare).toHaveBeenCalledWith({
       show: true,
-      typeInterval: 1
+      typeInterval: 1,
+      waitTimeout: 45000,
+      gotoTimeout: 45000
     })
     expect(useragent).toHaveBeenCalledWith(
       `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36`
@@ -28,7 +30,9 @@ test(`setup without debug`, () => {
   .then(nightmare => {
     expect(Nightmare).toHaveBeenCalledWith({
       show: false,
-      typeInterval: 1
+      typeInterval: 1,
+      waitTimeout: 45000,
+      gotoTimeout: 45000
     })
     expect(useragent).toHaveBeenCalledWith(
       `https://www.npmjs.com/package/consumption`
