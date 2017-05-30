@@ -4,4 +4,4 @@ distribution
 package
 consumption*.tgz
 npm-debug.log
-coverage
+.vscode

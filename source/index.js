@@ -1,5 +1,8 @@
-import tele2 from './tele2/index'
+const nightmare = require(`nightmare`)
 
-export default {
-  tele2
-}
+// login
+// fetch subscriptions
+// select subscription, default to all
+// get consumption
+
+module.exports = {}

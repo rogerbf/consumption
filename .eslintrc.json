@@ -1,8 +1,8 @@
 {
+  "parser": "babel-eslint",
   "extends": "standard",
   "env": {
-    "node": true,
-    "jest": true
+    "node": true
   },
   "parserOptions": {
     "ecmaVersion": 2017,
@@ -13,7 +13,7 @@
   },
   "rules": {
     "quotes": [
-      "error",
+      "warn",
       "backtick"
     ]
   }
