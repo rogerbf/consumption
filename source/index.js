@@ -30,9 +30,36 @@ const initialize = (
     }
   )
 
+const login = (
+  configuration,
+  { scraper, credentials: { email, password } }
+) =>
+  Object.assign(
+    {},
+    configuration,
+    {
+      scraper: (
+        scraper
+        .goto(`https://www.tele2.se/LogOn/LogOn`)
+        .type(`#loginForm\\.username`, email)
+        .type(`#loginForm\\.password`, password)
+        .click(`[value="Logga in"]`)
+        .wait(`.t2-nav-nestedlist`)
+      )
+    }
+  )
+
 // login
 // fetch subscriptions
 // select subscription, default to all
 // get consumption
 
-module.exports = () => {}
+module.exports = async (
+  options = {
+    credentials: {
+      email: undefined,
+      password: undefined
+    },
+    subscriptions: []
+  }
+) => {}
