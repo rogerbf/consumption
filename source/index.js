@@ -49,6 +49,10 @@ const login = (
     }
   )
 
+const run = async (configuration, { scraper } = configuration) => {
+  await scraper.end()
+}
+
 // login
 // fetch subscriptions
 // select subscription, default to all
@@ -61,5 +65,17 @@ module.exports = async (
       password: undefined
     },
     subscriptions: []
-  }
-) => {}
+  },
+  {
+    credentials: {
+      email = undefined,
+      password = undefined
+    },
+    subscriptions = []
+  } = options
+) =>
+  [ initialize, login, run ]
+  .reduce(
+    (instance, next) => next(instance),
+    Object.assign({}, configuration, options)
+  )
