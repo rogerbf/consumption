@@ -18,36 +18,34 @@ const configuration = {
 const initialize = (
   configuration,
   { dependencies: { nightmare }, debug, nightmareDefaultOptions, useragent }
-) =>
-  Object.assign(
-    {},
-    configuration,
-    {
-      scraper: (
-        nightmare(Object.assign({}, nightmareDefaultOptions, { show: debug }))
-        .useragent(useragent)
-      )
-    }
-  )
+) => Object.assign(
+  {},
+  configuration,
+  {
+    scraper: (
+      nightmare(Object.assign({}, nightmareDefaultOptions, { show: debug }))
+      .useragent(useragent)
+    )
+  }
+)
 
 const login = (
   configuration,
   { scraper, credentials: { email, password } }
-) =>
-  Object.assign(
-    {},
-    configuration,
-    {
-      scraper: (
-        scraper
-        .goto(`https://www.tele2.se/LogOn/LogOn`)
-        .type(`#loginForm\\.username`, email)
-        .type(`#loginForm\\.password`, password)
-        .click(`[value="Logga in"]`)
-        .wait(`.t2-nav-nestedlist`)
-      )
-    }
-  )
+) => Object.assign(
+  {},
+  configuration,
+  {
+    scraper: (
+      scraper
+      .goto(`https://www.tele2.se/LogOn/LogOn`)
+      .type(`#loginForm\\.username`, email)
+      .type(`#loginForm\\.password`, password)
+      .click(`[value="Logga in"]`)
+      .wait(`.t2-nav-nestedlist`)
+    )
+  }
+)
 
 const run = async (configuration, { scraper } = configuration) => {
   await scraper.end()
