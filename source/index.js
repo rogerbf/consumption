@@ -47,6 +47,8 @@ const login = (
   }
 )
 
+const getSubscriptions = async (configuration, { scraper }) => {}
+
 const run = async (configuration, { scraper } = configuration) => {
   await scraper.end()
 }
