@@ -17,21 +17,21 @@ const configuration = {
 
 const initialize = (
   configuration,
-  { dependencies: { nightmare }, debug, nightmareDefaultOptions, useragent }
+  { dependencies: { nightmare }, debug, nightmareOptions, useragent } = configuration
 ) => Object.assign(
   {},
   configuration,
   {
     scraper: (
-      nightmare(Object.assign({}, nightmareDefaultOptions, { show: debug }))
+      nightmare(Object.assign({}, nightmareOptions, { show: debug }))
       .useragent(useragent)
     )
   }
 )
 
-const login = (
+const login = async (
   configuration,
-  { scraper, credentials: { email, password } }
+  { scraper, credentials: { email, password } } = configuration
 ) => Object.assign(
   {},
   configuration,
@@ -42,15 +42,34 @@ const login = (
       .type(`#loginForm\\.username`, email)
       .type(`#loginForm\\.password`, password)
       .click(`[value="Logga in"]`)
-      .wait(`.t2-nav-nestedlist`)
+      // .wait(`.t2-nav-nestedlist`)
     )
   }
 )
 
-const getSubscriptions = async (configuration, { scraper }) => {}
+const getSubscriptions = async (
+  configuration,
+  { scraper } = configuration
+) => {
+  const subscriptions = (
+    await scraper
+    .goto(`https://www.tele2.se/mitt-tele2`)
+    .evaluate(() =>
+      Array
+      .from(document.querySelectorAll(`#subscriptions [href*=subscriptionId]`))
+      .map(a => a.search.replace(/\?subscriptionId=/, ``))
+    )
+  )
+  return Object.assign(
+    {},
+    configuration,
+    { subscriptions }
+  )
+}
 
 const run = async (configuration, { scraper } = configuration) => {
   await scraper.end()
+  console.log(configuration.subscriptions)
 }
 
 // login
@@ -63,18 +82,16 @@ module.exports = async (
     credentials: {
       email: undefined,
       password: undefined
-    },
-    subscriptions: []
+    }
   },
   {
     credentials: {
       email = undefined,
       password = undefined
-    },
-    subscriptions = []
+    }
   } = options
 ) =>
-  [ initialize, login, run ]
+  [ initialize, login, getSubscriptions, run ]
   .reduce(
     (instance, next) => next(instance),
     Object.assign({}, configuration, options)
