@@ -43,6 +43,7 @@ const login = async (
       .type(`#loginForm\\.password`, password)
       .click(`[value="Logga in"]`)
       // .wait(`.t2-nav-nestedlist`)
+      .wait(`#subscriptions`)
     )
   }
 )
@@ -69,7 +70,7 @@ const getSubscriptions = async (
 
 const run = async (configuration, { scraper } = configuration) => {
   await scraper.end()
-  console.log(configuration.subscriptions)
+  return configuration
 }
 
 // login
@@ -93,6 +94,9 @@ module.exports = async (
 ) =>
   [ initialize, login, getSubscriptions, run ]
   .reduce(
-    (instance, next) => next(instance),
-    Object.assign({}, configuration, options)
+    async (instance, next) => {
+      const intermediate = await instance
+      return next(intermediate)
+    },
+    Promise.resolve(Object.assign({}, configuration, options))
   )
