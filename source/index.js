@@ -1,4 +1,4 @@
-const configuration = {
+const initialState = {
   dependencies: {
     nightmare: require(`nightmare`)
   },
@@ -16,11 +16,11 @@ const configuration = {
 }
 
 const initialize = (
-  configuration,
-  { dependencies: { nightmare }, debug, nightmareOptions, useragent } = configuration
+  state,
+  { dependencies: { nightmare }, debug, nightmareOptions, useragent } = state
 ) => Object.assign(
   {},
-  configuration,
+  state,
   {
     scraper: (
       nightmare(Object.assign({}, nightmareOptions, { show: debug }))
@@ -30,11 +30,11 @@ const initialize = (
 )
 
 const login = async (
-  configuration,
-  { scraper, credentials: { email, password } } = configuration
+  state,
+  { scraper, credentials: { email, password } } = state
 ) => Object.assign(
   {},
-  configuration,
+  state,
   {
     scraper: (
       scraper
@@ -49,8 +49,8 @@ const login = async (
 )
 
 const getSubscriptions = async (
-  configuration,
-  { scraper } = configuration
+  state,
+  { scraper } = state
 ) => {
   const subscriptions = (
     await scraper
@@ -63,14 +63,14 @@ const getSubscriptions = async (
   )
   return Object.assign(
     {},
-    configuration,
+    state,
     { subscriptions }
   )
 }
 
-const run = async (configuration, { scraper } = configuration) => {
+const run = async (state, { scraper } = state) => {
   await scraper.end()
-  return configuration
+  return state
 }
 
 // login
@@ -94,9 +94,9 @@ module.exports = async (
 ) =>
   [ initialize, login, getSubscriptions, run ]
   .reduce(
-    async (instance, next) => {
-      const intermediate = await instance
-      return next(intermediate)
+    async (nextState, nextStep) => {
+      const intermediate = await nextState
+      return nextStep(intermediate)
     },
-    Promise.resolve(Object.assign({}, configuration, options))
+    Object.assign({}, initialState, options)
   )
