@@ -98,11 +98,6 @@ const end = async (state, { scraper } = state) => {
   return state
 }
 
-// login
-// fetch subscriptions
-// select subscription, default to all
-// get consumption
-
 module.exports = async (
   options = {
     credentials: {
