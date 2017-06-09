@@ -42,7 +42,6 @@ const login = async (
       .type(`#loginForm\\.username`, email)
       .type(`#loginForm\\.password`, password)
       .click(`[value="Logga in"]`)
-      // .wait(`.t2-nav-nestedlist`)
       .wait(`#subscriptions`)
     )
   }
@@ -61,6 +60,7 @@ const getSubscriptions = async (
       .map(a => a.search.replace(/\?subscriptionId=/, ``))
     )
   )
+
   return Object.assign(
     {},
     state,
@@ -68,7 +68,32 @@ const getSubscriptions = async (
   )
 }
 
-const run = async (state, { scraper } = state) => {
+const getConsumption = async (
+  state,
+  { scraper, subscriptions } = state
+) => {
+  const dataBuckets = await subscriptions.reduce(
+    async (buckets, msisdn) => {
+      const bucket = (
+        await scraper
+        .goto(`https://www.tele2.se/mitt-tele2/RedirectToConsumptionPage?msisdn=${msisdn}`)
+        .wait(`.bucket__body__data`)
+        .goto(`https://www.tele2.se/t2api/consumptions/GetDataBuckets`)
+        .evaluate(() => JSON.parse(document.querySelector(`body`).innerText))
+      )
+      return buckets.concat(Object.assign({}, { msisdn }, bucket))
+    },
+    []
+  )
+
+  return Object.assign(
+    {},
+    state,
+    { dataBuckets }
+  )
+}
+
+const end = async (state, { scraper } = state) => {
   await scraper.end()
   return state
 }
@@ -92,11 +117,11 @@ module.exports = async (
     }
   } = options
 ) =>
-  [ initialize, login, getSubscriptions, run ]
+  [ initialize, login, getSubscriptions, getConsumption, end ]
   .reduce(
-    async (nextState, nextStep) => {
-      const intermediate = await nextState
-      return nextStep(intermediate)
+    async (nextState, operation) => {
+      const state = await nextState
+      return operation(state)
     },
     Object.assign({}, initialState, options)
   )
