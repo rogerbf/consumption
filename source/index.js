@@ -104,6 +104,7 @@ module.exports = async (
       email: undefined,
       password: undefined
     }
+    // selected subscription(s)
   },
   {
     credentials: {
