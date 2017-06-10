@@ -1,18 +1,20 @@
-const initialState = {
-  dependencies: {
-    nightmare: require(`nightmare`)
-  },
-  debug: process.env.DEBUG === `consumption`,
-  nightmareOptions: {
-    typeInterval: 1,
-    waitTimeout: 45000,
-    gotoTimeout: 45000
-  },
-  useragent: (
-    process.env.NODE_ENV === `development`
-    ? `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36`
-    : `https://www.npmjs.com/package/consumption`
-  )
+const getInitialState = ({ NODE_ENV: env, DEBUG: debug }) => {
+  return {
+    dependencies: {
+      nightmare: require(`nightmare`)
+    },
+    debug: debug === `consumption`,
+    nightmareOptions: {
+      typeInterval: 1,
+      waitTimeout: 45000,
+      gotoTimeout: 45000
+    },
+    useragent: (
+      env === `development`
+      ? `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36`
+      : `https://www.npmjs.com/package/consumption`
+    )
+  }
 }
 
 const initialize = (
@@ -49,11 +51,11 @@ const login = async (
 
 const getSubscriptions = async (
   state,
-  { scraper, selectedSubscriptions } = state
+  { scraper, filterSubscriptions } = state
 ) => {
   const subscriptions = (
-    selectedSubscriptions.length > 0
-    ? selectedSubscriptions
+    filterSubscriptions.length > 0
+    ? filterSubscriptions
     : (
       await scraper
       .goto(`https://www.tele2.se/mitt-tele2`)
@@ -108,14 +110,14 @@ module.exports = async (
       email: ``,
       password: ``
     },
-    selectedSubscriptions: []
+    filterSubscriptions: []
   },
   {
     credentials: {
       email = ``,
       password = ``
     },
-    selectedSubscriptions = []
+    filterSubscriptions = []
   } = options
 ) =>
   [ initialize, login, getSubscriptions, getConsumption, terminate ]
@@ -124,5 +126,5 @@ module.exports = async (
       const state = await nextState
       return operation(state)
     },
-    Object.assign({}, initialState, options)
+    Object.assign({}, getInitialState(process.env), options)
   )
