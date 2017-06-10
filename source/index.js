@@ -97,7 +97,7 @@ const getConsumption = async (
   )
 }
 
-const end = async (state, { scraper } = state) => {
+const terminate = async (state, { scraper } = state) => {
   await scraper.end()
   return state
 }
@@ -118,7 +118,7 @@ module.exports = async (
     selectedSubscriptions = []
   } = options
 ) =>
-  [ initialize, login, getSubscriptions, getConsumption, end ]
+  [ initialize, login, getSubscriptions, getConsumption, terminate ]
   .reduce(
     async (nextState, operation) => {
       const state = await nextState
