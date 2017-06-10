@@ -49,15 +49,19 @@ const login = async (
 
 const getSubscriptions = async (
   state,
-  { scraper } = state
+  { scraper, selectedSubscriptions } = state
 ) => {
   const subscriptions = (
-    await scraper
-    .goto(`https://www.tele2.se/mitt-tele2`)
-    .evaluate(() =>
-      Array
-      .from(document.querySelectorAll(`#subscriptions [href*=subscriptionId]`))
-      .map(a => a.search.replace(/\?subscriptionId=/, ``))
+    selectedSubscriptions.length > 0
+    ? selectedSubscriptions
+    : (
+      await scraper
+      .goto(`https://www.tele2.se/mitt-tele2`)
+      .evaluate(() =>
+        Array
+        .from(document.querySelectorAll(`#subscriptions [href*=subscriptionId]`))
+        .map(a => a.search.replace(/\?subscriptionId=/, ``))
+      )
     )
   )
 
@@ -101,16 +105,17 @@ const end = async (state, { scraper } = state) => {
 module.exports = async (
   options = {
     credentials: {
-      email: undefined,
-      password: undefined
-    }
-    // selected subscription(s)
+      email: ``,
+      password: ``
+    },
+    selectedSubscriptions: []
   },
   {
     credentials: {
-      email = undefined,
-      password = undefined
-    }
+      email = ``,
+      password = ``
+    },
+    selectedSubscriptions = []
   } = options
 ) =>
   [ initialize, login, getSubscriptions, getConsumption, end ]
