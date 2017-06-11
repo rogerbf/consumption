@@ -1,31 +1,32 @@
-const getInitialState = ({ NODE_ENV: env }) => {
-  return {
-    dependencies: {
-      nightmare: require(`nightmare`)
-    },
-    debug: env === `development`,
-    nightmareOptions: {
-      typeInterval: 1,
-      waitTimeout: 45000,
-      gotoTimeout: 45000
-    },
-    useragent: (
-      env === `development`
-      ? `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36`
-      : `https://www.npmjs.com/package/consumption`
-    )
-  }
-}
+const getInitialState = (
+  isDevelopment = (() => process.env.NODE_ENV === `development`)()
+) => ({
+  isDevelopment,
+  dependencies: {
+    nightmare: require(`nightmare`)
+  },
+  nightmareOptions: {
+    typeInterval: 1,
+    waitTimeout: 45000,
+    gotoTimeout: 45000,
+    show: isDevelopment
+  },
+  useragent: (
+    isDevelopment
+    ? `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36`
+    : `https://www.npmjs.com/package/consumption`
+  )
+})
 
 const initialize = (
   state,
-  { dependencies: { nightmare }, debug, nightmareOptions, useragent } = state
+  { dependencies: { nightmare }, nightmareOptions, useragent } = state
 ) => Object.assign(
   {},
   state,
   {
     scraper: (
-      nightmare(Object.assign({}, nightmareOptions, { show: debug }))
+      nightmare(nightmareOptions)
       .useragent(useragent)
     )
   }
@@ -51,11 +52,11 @@ const login = async (
 
 const getSubscriptions = async (
   state,
-  { scraper, filterSubscriptions } = state
+  { scraper, showSubscriptions } = state
 ) => {
   const subscriptions = (
-    filterSubscriptions.length > 0
-    ? filterSubscriptions
+    showSubscriptions.length > 0
+    ? showSubscriptions
     : (
       await scraper
       .goto(`https://www.tele2.se/mitt-tele2`)
@@ -99,25 +100,17 @@ const getConsumption = async (
   )
 }
 
-const terminate = async (state, { scraper } = state) => {
+const terminate = async (state, { scraper, isDevelopment } = state) => {
   await scraper.end()
-  return state
+  return isDevelopment ? state : state.dataBuckets
 }
 
 module.exports = async (
-  options = {
-    credentials: {
-      email: ``,
-      password: ``
-    },
-    filterSubscriptions: []
-  },
+  options = (() => { throw Error(`missing options object`) })(),
   {
-    credentials: {
-      email = ``,
-      password = ``
-    },
-    filterSubscriptions = []
+    email = (() => { throw Error(`missing email`) })(),
+    password = (() => { throw Error(`missing password`) })(),
+    showSubscriptions = []
   } = options
 ) =>
   [ initialize, login, getSubscriptions, getConsumption, terminate ]
@@ -126,5 +119,5 @@ module.exports = async (
       const state = await nextState
       return operation(state)
     },
-    Object.assign({}, getInitialState(process.env), options)
+    Object.assign({}, getInitialState(), options)
   )
