@@ -34,7 +34,7 @@ const initialize = (
 
 const login = async (
   state,
-  { scraper, credentials: { email, password } } = state
+  { scraper, email, password } = state
 ) => Object.assign(
   {},
   state,
@@ -52,11 +52,11 @@ const login = async (
 
 const getSubscriptions = async (
   state,
-  { scraper, showSubscriptions } = state
+  { scraper, msisdn } = state
 ) => {
   const subscriptions = (
-    showSubscriptions.length > 0
-    ? showSubscriptions
+    msisdn.length > 0
+    ? msisdn
     : (
       await scraper
       .goto(`https://www.tele2.se/mitt-tele2`)
@@ -110,7 +110,7 @@ module.exports = async (
   {
     email = (() => { throw Error(`missing email`) })(),
     password = (() => { throw Error(`missing password`) })(),
-    showSubscriptions = []
+    msisdn = []
   } = options
 ) =>
   [ initialize, login, getSubscriptions, getConsumption, terminate ]
@@ -119,5 +119,5 @@ module.exports = async (
       const state = await nextState
       return operation(state)
     },
-    Object.assign({}, getInitialState(), options)
+    Object.assign({}, getInitialState(), { msisdn }, options)
   )
