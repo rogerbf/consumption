@@ -1,9 +1,9 @@
-const getInitialState = ({ NODE_ENV: env, DEBUG: debug }) => {
+const getInitialState = ({ NODE_ENV: env }) => {
   return {
     dependencies: {
       nightmare: require(`nightmare`)
     },
-    debug: debug === `consumption`,
+    debug: env === `development`,
     nightmareOptions: {
       typeInterval: 1,
       waitTimeout: 45000,
