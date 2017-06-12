@@ -1,7 +1,7 @@
 {
   "name": "consumption",
   "version": "1.0.0",
-  "description": "",
+  "description": "fetch current data usage from Mitt Tele2",
   "main": "./distribution/index.js",
   "scripts": {
     "test": "echo 'no tests'",
@@ -15,7 +15,12 @@
     "repl": "npm run build && babel-node",
     "nsp": "nsp check"
   },
-  "keywords": [],
+  "keywords": [
+    "tele2",
+    "data usage",
+    "data",
+    "usage"
+  ],
   "author": "rogerbf <roger@bergfalk.nu> (http://bergfalk.nu/)",
   "license": "MIT",
   "devDependencies": {
