@@ -19,7 +19,7 @@ consumption({
 
 ### `consumption(options)`
 
-- `options` &lt;Object&gt;, must contain: `email` and `password`. Can optionally contain `subscriptions`
+- `options` &lt;Object&gt;
   - `email` &lt;String&gt;, ***required***
   - `password` &lt;String&gt;, ***required***
   - `subscriptions` &lt;Array&gt;, filter subscriptions
