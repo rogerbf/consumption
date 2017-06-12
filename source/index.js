@@ -110,7 +110,7 @@ module.exports = async (
   {
     email = (() => { throw Error(`missing email`) })(),
     password = (() => { throw Error(`missing password`) })(),
-    msisdn = []
+    subscriptions: msisdn = []
   } = options
 ) =>
   [ initialize, login, getSubscriptions, getConsumption, terminate ]
